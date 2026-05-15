@@ -1,0 +1,73 @@
+services:
+  # ── PostgreSQL (chỉ dùng cho local dev) ──────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: phongkham
+      POSTGRES_USER: phongkham
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localdevpassword}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U phongkham"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── NestJS API ────────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./phongkham-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://phongkham:${POSTGRES_PASSWORD:-localdevpassword}@postgres:5432/phongkham
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-30d}
+      ADMIN_SEED_PASSWORD: ${ADMIN_SEED_PASSWORD}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@phongkhamthuyluc.com}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID:-}
+      CLOUDFLARE_R2_ACCESS_KEY: ${CLOUDFLARE_R2_ACCESS_KEY:-}
+      CLOUDFLARE_R2_SECRET_KEY: ${CLOUDFLARE_R2_SECRET_KEY:-}
+      R2_BUCKET_NAME: ${R2_BUCKET_NAME:-phongkham-files}
+      R2_PUBLIC_URL: ${R2_PUBLIC_URL:-}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── React Web App (Admin + Customer Portal) ───────────────────────────────────
+  web:
+    build:
+      context: ./phongkham-web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+  # ── Landing Page (Next.js Static Export) ──────────────────────────────────────
+  landing:
+    build:
+      context: ./phongkham-landing
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+
+volumes:
+  postgres_data:

@@ -1,0 +1,12 @@
+export const JWT_ACCESS_ADMIN_EXPIRY = '15m';
+export const JWT_ACCESS_CUSTOMER_EXPIRY = '1h';
+export const JWT_REFRESH_ADMIN_EXPIRY = '7d';
+export const JWT_REFRESH_CUSTOMER_EXPIRY = '30d';
+export const JWT_REFRESH_ADMIN_EXPIRY_SECONDS = 7 * 24 * 60 * 60;
+export const JWT_REFRESH_CUSTOMER_EXPIRY_SECONDS = 30 * 24 * 60 * 60;
+export const REFRESH_TOKEN_COOKIE_NAME = 'refresh_token';
+export const PASSWORD_RESET_TOKEN_EXPIRY_HOURS = 1;
+export const INVITE_TOKEN_EXPIRY_HOURS = 72;
+export const BCRYPT_SALT_ROUNDS = 12;
+export const PUBLIC_ROUTE_KEY = 'isPublic';
+export const ROLE_KEY = 'role';

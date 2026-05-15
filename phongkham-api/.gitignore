@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Drizzle migrations (generated)
+src/database/migrations/*.sql
+src/database/migrations/meta/
+!src/database/migrations/0000_init_schema.sql
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

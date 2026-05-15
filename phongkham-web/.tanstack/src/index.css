@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2d6e6e;
+  --color-primary-light: #4a9d9d;
+  --color-primary-dark: #1e4a4a;
+  --color-accent: #e8a24a;
+  --color-accent-light: #f5d5a0;
+  --color-surface: #f0f7f7;
+  --color-sidebar: #1e4a4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #f9fafb;
+}
