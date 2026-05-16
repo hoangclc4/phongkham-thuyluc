@@ -33,6 +33,8 @@ import {
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateCustomerBookingDto } from './dto/create-customer-booking.dto';
+import { CreateCustomerPetDto } from './dto/create-customer-pet.dto';
+import { UpdateCustomerPetDto } from './dto/update-customer-pet.dto';
 
 const ACTIVE_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress'] as const;
 const MAX_SLOT_CAPACITY = 2;
@@ -161,6 +163,66 @@ export class CustomerService {
       .update(customers)
       .set({ passwordHash: newHash, updatedAt: new Date() })
       .where(eq(customers.id, customerId));
+  }
+
+  async createPet(customerId: string, dto: CreateCustomerPetDto): Promise<CustomerPetResponse> {
+    const [inserted] = await this.db
+      .insert(pets)
+      .values({
+        customerId,
+        name: dto.name,
+        species: dto.species as typeof pets.$inferInsert['species'],
+        gender: (dto.gender ?? 'unknown') as typeof pets.$inferInsert['gender'],
+        breed: dto.breed ?? null,
+        dateOfBirth: dto.dateOfBirth ?? null,
+        color: dto.color ?? null,
+        weightKg: dto.weightKg ?? null,
+        isNeutered: dto.isNeutered ?? false,
+        knownAllergies: dto.knownAllergies ?? [],
+        notes: dto.notes ?? null,
+        status: 'healthy',
+      })
+      .returning({ id: pets.id });
+
+    return this.getPet(customerId, inserted.id);
+  }
+
+  async updatePet(customerId: string, petId: string, dto: UpdateCustomerPetDto): Promise<CustomerPetResponse> {
+    await this.verifyPetOwnership(customerId, petId);
+
+    const updateData: Partial<typeof pets.$inferInsert> = { updatedAt: new Date() };
+
+    if (dto.name !== undefined) updateData.name = dto.name;
+    if (dto.species !== undefined) updateData.species = dto.species as typeof pets.$inferInsert['species'];
+    if (dto.gender !== undefined) updateData.gender = dto.gender as typeof pets.$inferInsert['gender'];
+    if (dto.breed !== undefined) updateData.breed = dto.breed;
+    if (dto.dateOfBirth !== undefined) updateData.dateOfBirth = dto.dateOfBirth;
+    if (dto.color !== undefined) updateData.color = dto.color;
+    if (dto.weightKg !== undefined) updateData.weightKg = dto.weightKg;
+    if (dto.isNeutered !== undefined) updateData.isNeutered = dto.isNeutered;
+    if (dto.knownAllergies !== undefined) updateData.knownAllergies = dto.knownAllergies;
+    if (dto.notes !== undefined) updateData.notes = dto.notes;
+
+    await this.db.update(pets).set(updateData).where(eq(pets.id, petId));
+
+    return this.getPet(customerId, petId);
+  }
+
+  async deletePet(customerId: string, petId: string): Promise<void> {
+    await this.verifyPetOwnership(customerId, petId);
+    await this.db
+      .update(pets)
+      .set({ deletedAt: new Date(), updatedAt: new Date() })
+      .where(eq(pets.id, petId));
+  }
+
+  async updatePetAvatar(customerId: string, petId: string, avatarUrl: string): Promise<CustomerPetResponse> {
+    await this.verifyPetOwnership(customerId, petId);
+    await this.db
+      .update(pets)
+      .set({ avatarUrl, updatedAt: new Date() })
+      .where(eq(pets.id, petId));
+    return this.getPet(customerId, petId);
   }
 
   async listPets(customerId: string): Promise<CustomerPetResponse[]> {
