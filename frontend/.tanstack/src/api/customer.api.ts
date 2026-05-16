@@ -1,6 +1,6 @@
 import { api } from '@/lib/api';
 import type { CustomerPortalProfile } from '@/types/customer';
-import type { Pet } from '@/types/pet';
+import type { Pet, PetGender, PetSpecies } from '@/types/pet';
 import type { Booking, TimeSlot, ServiceType } from '@/types/booking';
 import type { MedicalRecord } from '@/types/medical-record';
 import type { ChatDto, ChatResponse } from '@/types/ai';
@@ -56,5 +56,43 @@ export async function chat(dto: ChatDto): Promise<ChatResponse> {
 
 export async function getMedicalRecords(petId: string): Promise<MedicalRecord[]> {
   const response = await api.get<MedicalRecord[]>(`/customer/pets/${petId}/medical-records`);
+  return response.data;
+}
+
+export interface CreateCustomerPetBody {
+  name: string;
+  species: PetSpecies;
+  gender: PetGender;
+  breed?: string;
+  dateOfBirth?: string;
+  color?: string;
+  weightKg?: string;
+  isNeutered?: boolean;
+  knownAllergies?: string[];
+  notes?: string;
+}
+
+export type UpdateCustomerPetBody = Partial<CreateCustomerPetBody>;
+
+export async function createPet(dto: CreateCustomerPetBody): Promise<Pet> {
+  const response = await api.post<Pet>('/customer/pets', dto);
+  return response.data;
+}
+
+export async function updatePet(petId: string, dto: UpdateCustomerPetBody): Promise<Pet> {
+  const response = await api.put<Pet>(`/customer/pets/${petId}`, dto);
+  return response.data;
+}
+
+export async function deletePet(petId: string): Promise<void> {
+  await api.delete(`/customer/pets/${petId}`);
+}
+
+export async function uploadPetAvatar(petId: string, file: File): Promise<Pet> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await api.put<Pet>(`/customer/pets/${petId}/avatar`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return response.data;
 }
