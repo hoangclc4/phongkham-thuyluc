@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as customerApi from '@/api/customer.api';
 import type { ServiceType } from '@/types/booking';
 import type { ChatDto } from '@/types/ai';
+import type { CreateCustomerPetBody, UpdateCustomerPetBody } from '@/api/customer.api';
 
 export const portalKeys = {
   all: ['portal'] as const,
@@ -82,5 +83,49 @@ export function useCancelMyBooking() {
 export function useChatMutation() {
   return useMutation({
     mutationFn: (dto: ChatDto) => customerApi.chat(dto),
+  });
+}
+
+export function useCreateMyPet() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: CreateCustomerPetBody) => customerApi.createPet(dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: portalKeys.pets() });
+    },
+  });
+}
+
+export function useUpdateMyPet() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ petId, dto }: { petId: string; dto: UpdateCustomerPetBody }) =>
+      customerApi.updatePet(petId, dto),
+    onSuccess: (_, { petId }) => {
+      queryClient.invalidateQueries({ queryKey: portalKeys.pets() });
+      queryClient.invalidateQueries({ queryKey: portalKeys.pet(petId) });
+    },
+  });
+}
+
+export function useDeleteMyPet() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (petId: string) => customerApi.deletePet(petId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: portalKeys.pets() });
+    },
+  });
+}
+
+export function useUploadMyPetAvatar() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ petId, file }: { petId: string; file: File }) =>
+      customerApi.uploadPetAvatar(petId, file),
+    onSuccess: (_, { petId }) => {
+      queryClient.invalidateQueries({ queryKey: portalKeys.pets() });
+      queryClient.invalidateQueries({ queryKey: portalKeys.pet(petId) });
+    },
   });
 }
