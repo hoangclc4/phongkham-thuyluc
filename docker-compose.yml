@@ -6,9 +6,9 @@ services:
     environment:
       POSTGRES_DB: phongkham
       POSTGRES_USER: phongkham
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-localdevpassword}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-phongkham}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -28,7 +28,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3200
-      DATABASE_URL: postgresql://phongkham:${POSTGRES_PASSWORD:-localdevpassword}@postgres:5432/phongkham
+      DATABASE_URL: postgresql://phongkham:${POSTGRES_PASSWORD:-phongkham}@postgres:5432/phongkham
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
@@ -42,7 +42,7 @@ services:
       CLOUDFLARE_R2_SECRET_KEY: ${CLOUDFLARE_R2_SECRET_KEY:-}
       R2_BUCKET_NAME: ${R2_BUCKET_NAME:-phongkham-files}
       R2_PUBLIC_URL: ${R2_PUBLIC_URL:-}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3202}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
     depends_on:
       postgres:
         condition: service_healthy

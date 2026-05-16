@@ -14,6 +14,7 @@ export default defineConfig({
     react(),
   ],
   server: {
+    port: 3202,
     watch: {
       ignored: ['**/.tanstack/src/routeTree.gen.ts'],
     },

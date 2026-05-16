@@ -9,7 +9,7 @@ async function seed() {
   const passwordHash = await bcrypt.hash(process.env.ADMIN_SEED_PASSWORD ?? 'change-me-immediately', 12);
 
   await db.insert(adminUsers).values({
-    email:        'bacsiluc@phongkhamthuyluc.com',
+    email:        'bacsithuyluc@gmail.com',
     passwordHash,
     fullName:     'Bác Sĩ Lục',
   }).onConflictDoNothing();

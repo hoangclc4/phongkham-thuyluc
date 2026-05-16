@@ -50,7 +50,7 @@ export class AuthController {
       maxAge: JWT_REFRESH_ADMIN_EXPIRY_SECONDS,
     });
 
-    return { accessToken, user: admin };
+    return { accessToken, user: { sub: admin.id, role: 'admin' as const, email: admin.email } };
   }
 
   @Public()
@@ -71,7 +71,7 @@ export class AuthController {
       maxAge: JWT_REFRESH_CUSTOMER_EXPIRY_SECONDS,
     });
 
-    return { accessToken, user: customer };
+    return { accessToken, user: { sub: customer.id, role: 'customer' as const, phone: customer.phone, name: customer.fullName } };
   }
 
   @Public()

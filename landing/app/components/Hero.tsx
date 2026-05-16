@@ -145,7 +145,7 @@ export function Hero() {
         {/* Pet illustration */}
         <div className="relative z-10 w-64 sm:w-72 lg:w-80 aspect-4/5">
           <Image
-            src="/images/hero-dog.png"
+            src="/images/dog.png"
             alt="Thú cưng được chăm sóc tại Phòng Khám Thú Y Bác Sĩ Lục"
             fill
             className="object-contain object-bottom"

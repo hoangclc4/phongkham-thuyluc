@@ -12,10 +12,11 @@ export const bookingKeys = {
   today: () => [...bookingKeys.all, 'today'] as const,
 };
 
-export function useBookings(params: BookingListParams) {
+export function useBookings(params: BookingListParams, enabled = true) {
   return useQuery({
     queryKey: bookingKeys.list(params),
     queryFn: () => bookingsApi.list(params),
+    enabled,
   });
 }
 

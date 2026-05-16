@@ -167,11 +167,10 @@ function CalendarView() {
     dateTo: '',
   });
 
-  const { data } = useBookings({
-    dateFrom: calendarRange.dateFrom,
-    dateTo: calendarRange.dateTo,
-    limit: 200,
-  });
+  const { data } = useBookings(
+    { dateFrom: calendarRange.dateFrom, dateTo: calendarRange.dateTo, limit: 200 },
+    Boolean(calendarRange.dateFrom),
+  );
 
   const bookings = data?.data ?? [];
 
@@ -209,6 +208,12 @@ function CalendarView() {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+          buttonText={{
+            today: 'Hôm nay',
+            month: 'Tháng',
+            week: 'Tuần',
+            day: 'Ngày',
           }}
           events={calendarEvents}
           eventClick={handleEventClick}

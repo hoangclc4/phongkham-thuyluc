@@ -30,6 +30,10 @@ function AdminLoginPage() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: 'bacsithuyluc@gmail.com',
+      password: 'bacsithuyluc',
+    },
   });
 
   function onSubmit(values: LoginFormValues) {

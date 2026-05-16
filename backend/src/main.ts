@@ -11,19 +11,24 @@ async function bootstrap() {
     new FastifyAdapter({ ignoreTrailingSlash: true }),
   );
 
-  app.enableCors({
-    origin: [
-      process.env.CORS_ORIGIN ?? 'http://localhost:3202',
-      'https://app.phongkhamthuyluc.com',
-      'https://phongkhamthuyluc.com',
-      'https://staging-app.phongkhamthuyluc.com',
-    ],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  });
+  const isDev = process.env.NODE_ENV !== 'production';
+  app.enableCors(
+    isDev
+      ? { origin: true, credentials: true }
+      : {
+          origin: [
+            process.env.CORS_ORIGIN ?? 'http://localhost:3202',
+            'https://app.phongkhamthuyluc.com',
+            'https://phongkhamthuyluc.com',
+            'https://staging-app.phongkhamthuyluc.com',
+          ],
+          credentials: true,
+          methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+          allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+          preflightContinue: false,
+          optionsSuccessStatus: 204,
+        },
+  );
 
   await app.register(multipart, { limits: { fileSize: 10 * 1024 * 1024 } });
   await app.register(fastifyCookie);
