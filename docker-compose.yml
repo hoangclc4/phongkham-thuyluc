@@ -20,14 +20,14 @@ services:
   # ── NestJS API ────────────────────────────────────────────────────────────────
   api:
     build:
-      context: ./phongkham-api
+      context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3200:3200"
     environment:
       NODE_ENV: production
-      PORT: 3000
+      PORT: 3200
       DATABASE_URL: postgresql://phongkham:${POSTGRES_PASSWORD:-localdevpassword}@postgres:5432/phongkham
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
@@ -42,7 +42,7 @@ services:
       CLOUDFLARE_R2_SECRET_KEY: ${CLOUDFLARE_R2_SECRET_KEY:-}
       R2_BUCKET_NAME: ${R2_BUCKET_NAME:-phongkham-files}
       R2_PUBLIC_URL: ${R2_PUBLIC_URL:-}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3202}
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,24 +50,24 @@ services:
   # ── React Web App (Admin + Customer Portal) ───────────────────────────────────
   web:
     build:
-      context: ./phongkham-web
+      context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3200}
     restart: unless-stopped
     ports:
-      - "5173:80"
+      - "3202:80"
     depends_on:
       - api
 
   # ── Landing Page (Next.js Static Export) ──────────────────────────────────────
   landing:
     build:
-      context: ./phongkham-landing
+      context: ./landing
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "3001:3001"
+      - "3201:3201"
 
 volumes:
   postgres_data:
