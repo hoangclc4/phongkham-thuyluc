@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -79,6 +79,7 @@ export function PetFormModal({ open, onClose, pet }: PetFormModalProps) {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<PetFormValues>({
     resolver: zodResolver(petFormSchema),
@@ -95,6 +96,24 @@ export function PetFormModal({ open, onClose, pet }: PetFormModalProps) {
       notes: pet?.notes ?? '',
     },
   });
+
+  useEffect(() => {
+    if (!open) return;
+    reset({
+      name: pet?.name ?? '',
+      species: pet?.species ?? 'dog',
+      gender: pet?.gender ?? 'unknown',
+      breed: pet?.breed ?? '',
+      dateOfBirth: pet?.dateOfBirth ?? '',
+      color: pet?.color ?? '',
+      weightKg: pet?.weightKg != null ? String(pet.weightKg) : '',
+      isNeutered: pet?.isNeutered ?? false,
+      knownAllergiesText: pet?.knownAllergies?.join('\n') ?? '',
+      notes: pet?.notes ?? '',
+    });
+    setAvatarFile(null);
+    setAvatarPreview(pet?.avatarUrl ?? null);
+  }, [open, pet, reset]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
