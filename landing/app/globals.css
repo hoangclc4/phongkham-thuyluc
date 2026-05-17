@@ -23,3 +23,92 @@ body {
   color: #2a2520;
   font-family: var(--font-body);
 }
+
+/* ─────────────────────── Hero animations ─────────────────────── */
+
+@keyframes bounceA {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-22px) rotate(2deg); }
+}
+@keyframes bounceB {
+  0%, 100% { transform: translateY(-14px) rotate(3deg); }
+  50%      { transform: translateY(6px) rotate(-2deg); }
+}
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(0.6); opacity: 0; }
+  20%  { opacity: 0.9; }
+  100% { transform: translateY(-130px) scale(1.1); opacity: 0; }
+}
+@keyframes pulseHeart {
+  0%, 100% { transform: scale(1) rotate(-8deg); }
+  30%      { transform: scale(1.18) rotate(-8deg); }
+  60%      { transform: scale(0.96) rotate(-8deg); }
+}
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(46, 138, 74, 0.2); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 6px rgba(46, 138, 74, 0.08); transform: scale(1.1); }
+}
+@keyframes blobSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes blobMorph {
+  0%, 100% { border-radius: 58% 42% 55% 45% / 48% 60% 40% 52%; }
+  33%      { border-radius: 42% 58% 38% 62% / 60% 40% 55% 45%; }
+  66%      { border-radius: 55% 45% 62% 38% / 45% 55% 50% 50%; }
+}
+@keyframes shineSlide {
+  0%   { transform: translateX(-110%) skewX(-20deg); }
+  60%  { transform: translateX(260%) skewX(-20deg); }
+  100% { transform: translateX(260%) skewX(-20deg); }
+}
+@keyframes wordIn {
+  0%, 8%   { opacity: 0; transform: translateY(14px); }
+  18%, 92% { opacity: 1; transform: translateY(0); }
+  100%     { opacity: 1; transform: translateY(0); }
+}
+@keyframes badgeFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes sparkle {
+  0%, 100% { transform: scale(0.5); opacity: 0; }
+  50%      { transform: scale(1.2); opacity: 1; }
+}
+
+/* Hero utility classes */
+.hero-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2e8a4a;
+  box-shadow: 0 0 0 3px rgba(46, 138, 74, 0.2);
+  animation: pulseDot 1.6s ease-in-out infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.hero-word-1 {
+  animation: wordIn 5s ease-in-out infinite;
+  animation-delay: 0s;
+  animation-fill-mode: both;
+}
+.hero-word-2 {
+  animation: wordIn 5s ease-in-out infinite;
+  animation-delay: 0.25s;
+  animation-fill-mode: both;
+}
+.hero-word-3 {
+  animation: wordIn 5s ease-in-out infinite;
+  animation-delay: 0.5s;
+  animation-fill-mode: both;
+}
+
+.hero-btn-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+  width: 40%;
+  animation: shineSlide 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
