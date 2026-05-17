@@ -1,15 +1,43 @@
 @import "tailwindcss";
 
+/* ── Tailwind theme tokens ─────────────────────────────────── */
 @theme {
-  --color-primary: #2d6e6e;
-  --color-primary-light: #4a9d9d;
-  --color-primary-dark: #1e4a4a;
-  --color-accent: #e8a24a;
-  --color-accent-light: #f5d5a0;
-  --color-surface: #f0f7f7;
-  --color-sidebar: #1e4a4a;
+  --color-primary:       #d97757;
+  --color-primary-light: #e8967a;
+  --color-primary-dark:  #8b5a3c;
+  --color-surface:       #fff8f0;
+  --color-surface-mid:   #f5e6d3;
+  --color-border:        #eddcc8;
+  --color-sidebar:       #8b5a3c;
+  --color-dark:          #2a2520;
+  --color-dark-mid:      #3d342d;
+  --color-muted:         #8a7a6e;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'Be Vietnam Pro', system-ui, sans-serif;
 }
 
+/* ── shadcn/ui tokens ──────────────────────────────────────── */
+:root {
+  --background:           255 248 240;
+  --foreground:           42 37 32;
+  --card:                 255 255 255;
+  --card-foreground:      42 37 32;
+  --primary:              217 119 87;
+  --primary-foreground:   255 255 255;
+  --secondary:            245 230 211;
+  --secondary-foreground: 61 52 45;
+  --muted:                245 230 211;
+  --muted-foreground:     138 122 110;
+  --accent:               245 230 211;
+  --accent-foreground:    42 37 32;
+  --border:               237 220 200;
+  --input:                237 220 200;
+  --ring:                 217 119 87;
+  --radius:               0.5rem;
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
 * {
   box-sizing: border-box;
 }
@@ -20,6 +48,11 @@ html {
 
 body {
   min-height: 100dvh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #f9fafb;
+  font-family: var(--font-body);
+  background-color: #fff8f0;
+  color: #2a2520;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
 }

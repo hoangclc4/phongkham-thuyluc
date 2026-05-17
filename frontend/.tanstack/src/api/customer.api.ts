@@ -45,7 +45,7 @@ export async function cancelBooking(id: string): Promise<void> {
 }
 
 export async function getBookingSlots(date: string): Promise<TimeSlot[]> {
-  const response = await api.get<TimeSlot[]>('/customer/bookings/slots', { params: { date } });
+  const response = await api.get<TimeSlot[]>('/customer/booking-slots', { params: { date } });
   return response.data;
 }
 

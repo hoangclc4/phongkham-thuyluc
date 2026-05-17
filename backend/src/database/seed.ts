@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { db } from './database';
-import { adminUsers, serviceCatalog } from './schema';
+import { adminUsers, customers, serviceCatalog } from './schema';
 import bcrypt from 'bcryptjs';
 
 async function seed() {
@@ -12,6 +12,15 @@ async function seed() {
     email:        'bacsithuyluc@gmail.com',
     passwordHash,
     fullName:     'Bác Sĩ Lục',
+  }).onConflictDoNothing();
+
+  const customerPasswordHash = await bcrypt.hash(process.env.CUSTOMER_SEED_PASSWORD ?? 'change-me', 12);
+
+  await db.insert(customers).values({
+    fullName:     'Nguyễn Thị Lan',
+    phone:        process.env.CUSTOMER_SEED_PHONE ?? '0901234567',
+    email:        'khachhang@test.com',
+    passwordHash: customerPasswordHash,
   }).onConflictDoNothing();
 
   await db.insert(serviceCatalog).values([

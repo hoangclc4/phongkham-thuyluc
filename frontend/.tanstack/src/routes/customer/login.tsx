@@ -30,6 +30,10 @@ function CustomerLoginPage() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      phone: '0901234567',
+      password: 'khachhang123',
+    },
   });
 
   function onSubmit(values: LoginFormValues) {
