@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useMyPets } from '@/hooks/use-customer-portal';
 import { Badge } from '@/components/ui/badge';
@@ -5,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar } from '@/components/ui/avatar';
+import { PetFormModal } from '@/components/customer/pet-form-modal';
 import { PET_SPECIES_LABELS, PET_STATUS_LABELS, type PetSpecies, type PetStatus } from '@/types/pet';
 
 const SPECIES_EMOJI: Record<PetSpecies, string> = {
@@ -30,6 +32,7 @@ export const Route = createFileRoute('/customer/_layout/pets/')({
 });
 
 function CustomerPetsPage() {
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const { data: pets, isLoading, isError } = useMyPets();
 
   if (isError) {
@@ -42,7 +45,10 @@ function CustomerPetsPage() {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto">
-      <h1 className="text-xl font-bold text-gray-900 mb-4">Thú cưng của tôi</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-xl font-bold text-gray-900">Thú cưng của tôi</h1>
+        <Button size="sm" onClick={() => setAddModalOpen(true)}>+ Thêm</Button>
+      </div>
 
       {isLoading && (
         <div className="space-y-3">
@@ -64,7 +70,7 @@ function CustomerPetsPage() {
         <Card className="p-6 text-center">
           <p className="text-4xl mb-3">🐾</p>
           <p className="text-base text-gray-700 font-medium">Bạn chưa có thú cưng nào.</p>
-          <p className="text-sm text-gray-500 mt-1">Liên hệ phòng khám để được thêm thú cưng.</p>
+          <Button className="mt-3" onClick={() => setAddModalOpen(true)}>+ Thêm thú cưng đầu tiên</Button>
         </Card>
       )}
 
@@ -104,6 +110,8 @@ function CustomerPetsPage() {
           ))}
         </div>
       )}
+
+      <PetFormModal open={addModalOpen} onClose={() => setAddModalOpen(false)} />
     </div>
   );
 }

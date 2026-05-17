@@ -1,5 +1,8 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { useState } from 'react';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useMyPet, useMyMedicalRecords } from '@/hooks/use-customer-portal';
+import { PetFormModal } from '@/components/customer/pet-form-modal';
+import { DeletePetConfirmDialog } from '@/components/customer/delete-pet-confirm-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
@@ -40,6 +43,9 @@ export const Route = createFileRoute('/customer/_layout/pets/$id')({
 
 function CustomerPetDetailPage() {
   const { id } = Route.useParams();
+  const navigate = useNavigate();
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { data: pet, isLoading: petLoading, isError: petError } = useMyPet(id);
   const { data: records, isLoading: recordsLoading } = useMyMedicalRecords(id);
 
@@ -65,13 +71,19 @@ function CustomerPetDetailPage() {
 
   return (
     <div className="px-4 py-6 max-w-lg mx-auto space-y-4">
-      <Link
-        to="/customer/pets"
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 -ml-1"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Thú cưng
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          to="/customer/pets"
+          className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 -ml-1"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Thú cưng
+        </Link>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setEditModalOpen(true)}>Sửa</Button>
+          <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>Xoá</Button>
+        </div>
+      </div>
 
       {/* Pet info */}
       <Card>
@@ -222,6 +234,19 @@ function CustomerPetDetailPage() {
           )}
         </CardContent>
       </Card>
+
+      <PetFormModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        pet={pet}
+      />
+      <DeletePetConfirmDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        petId={pet.id}
+        petName={pet.name}
+        onDeleted={() => navigate({ to: '/customer/pets' })}
+      />
     </div>
   );
 }
